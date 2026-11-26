@@ -413,6 +413,14 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.diffViewer.ScrollTop()
 			}
+		case key.Matches(msg, keys.NextHunk):
+			if m.activePanel != FileTreePanel {
+				m.diffViewer.JumpHunk(1)
+			}
+		case key.Matches(msg, keys.PrevHunk):
+			if m.activePanel != FileTreePanel {
+				m.diffViewer.JumpHunk(-1)
+			}
 		case key.Matches(msg, keys.ScrollLeft):
 			if m.activePanel != FileTreePanel {
 				m.diffViewer.ScrollLeft(1)

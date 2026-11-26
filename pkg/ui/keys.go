@@ -34,6 +34,8 @@ type KeyMap struct {
 	ToggleMessage         key.Binding
 	OpenThemePicker       key.Binding
 	ToggleSelection       key.Binding
+	NextHunk              key.Binding
+	PrevHunk              key.Binding
 }
 
 var keys = &KeyMap{
@@ -161,6 +163,14 @@ var keys = &KeyMap{
 		key.WithKeys("v"),
 		key.WithHelp("v", "toggle selection"),
 	),
+	NextHunk: key.NewBinding(
+		key.WithKeys("]"),
+		key.WithHelp("]", "next hunk"),
+	),
+	PrevHunk: key.NewBinding(
+		key.WithKeys("["),
+		key.WithHelp("[", "prev hunk"),
+	),
 }
 
 func KeyGroups() [][]key.Binding {
@@ -172,6 +182,8 @@ func KeyGroups() [][]key.Binding {
 		keys.Bottom,
 		keys.NextFile,
 		keys.PrevFile,
+		keys.NextHunk,
+		keys.PrevHunk,
 		keys.CtrlD,
 		keys.CtrlU,
 		keys.ScrollLeft,

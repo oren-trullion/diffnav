@@ -17,6 +17,7 @@
   <img width="900" src="https://github.com/user-attachments/assets/104e156e-7e9d-4ea5-bea1-399ca71e12a5" />
 </p>
 
+HELLO!!!!!!!
 ## ❤️ Sponsoring
 
 If you enjoy `diffnav` and want to help, consider supporting the project with a

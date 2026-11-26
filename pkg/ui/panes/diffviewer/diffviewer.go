@@ -41,8 +41,11 @@ func cacheKey(path string, sideBySide bool) string {
 	return key
 }
 
+const hunkLabel = "  󰡏 "
+
 type diffLine struct {
 	item item.Item
+	hunk bool
 }
 
 func (o diffLine) GetItem() item.Item {
@@ -586,9 +589,42 @@ func stringToDiffLines(val string) []diffLine {
 	lines := strings.Split(val, "\n")
 	objects := make([]diffLine, len(lines))
 	for i, line := range lines {
-		objects[i] = diffLine{item: item.NewItem(line)}
+		objects[i] = diffLine{item: item.NewItem(line), hunk: strings.Contains(line, hunkLabel)}
 	}
 	return objects
+}
+
+// JumpHunk scrolls to the next hunk (dir > 0) or the previous one (dir < 0).
+func (m *Model) JumpHunk(dir int) {
+	node := m.file
+	if m.dir != nil {
+		node = m.dir
+	}
+	if node == nil {
+		return
+	}
+	top := m.fvp.GetItemMetrics().FirstVisibleItemIdx
+	target := -1
+	for i, l := range node.diff {
+		if !l.hunk {
+			continue
+		}
+		if dir > 0 && i > top {
+			target = i
+			break
+		}
+		if dir < 0 && i < top {
+			target = i
+		}
+	}
+	if target < 0 {
+		return
+	}
+	if target > top {
+		m.fvp.ScrollDown(target - top)
+	} else {
+		m.fvp.ScrollUp(top - target)
+	}
 }
 
 type deltaOpts struct {
@@ -616,7 +652,7 @@ func (m *Model) makeDeltaArgs(sideBySide bool, width int, opts deltaOpts) []stri
 		"--wrap-left-symbol= ",
 		"--wrap-right-symbol= ",
 		"--wrap-right-prefix-symbol= ",
-		"--hunk-label=  󰡏 ",
+		"--hunk-label=" + hunkLabel,
 		fmt.Sprintf(
 			"--syntax-theme=%s",
 			common.SupportedThemeToDeltaSyntax[theme.ID],
